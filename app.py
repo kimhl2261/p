@@ -2,24 +2,22 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
+import matplotlib
+import numpy as np
 
-# 폰트 직접 등록
-font_path = "./NanumGothic.ttf"
-font = fm.FontProperties(fname=font_path)
-
-plt.rcParams['font.family'] = font.get_name()
-plt.rcParams['axes.unicode_minus'] = False
-
-plt.rcParams['font.family'] = [
-    'Malgun Gothic', 
-    'AppleGothic', 
-    'NanumGothic'
-]
-plt.rcParams['axes.unicode_minus'] = False
-
-ax.set_title("상관관계 히트맵", fontproperties=font)
-ax.set_xlabel("사용연수", fontproperties=font)
-ax.set_ylabel("탁도", fontproperties=font)
+# 한글 폰트 설정
+matplotlib.rcParams['axes.unicode_minus'] = False
+try:
+    font_path = "./NanumGothic.ttf"
+    font = fm.FontProperties(fname=font_path)
+    plt.rcParams['font.family'] = font.get_name()
+except Exception:
+    for f in ['Malgun Gothic', 'AppleGothic', 'NanumGothic', 'DejaVu Sans']:
+        try:
+            plt.rcParams['font.family'] = f
+            break
+        except Exception:
+            continue
 
 st.set_page_config(
     page_title="서울시 상수도 노후화 분석",
@@ -34,7 +32,7 @@ st.set_page_config(
 def load_data() -> pd.DataFrame:
     data = [
         ["종로구", 44, 85, 0.35, 0.18, 0.12, 0.03, 7],
-        ["중구", 38, 78, 0.29, 0.20, 0.10, 0.02, 6],
+        ["중구",   38, 78, 0.29, 0.20, 0.10, 0.02, 6],
         ["강북구", 46, 88, 0.38, 0.17, 0.13, 0.03, 9],
         ["관악구", 42, 83, 0.34, 0.18, 0.12, 0.03, 8],
         ["서초구", 18, 30, 0.11, 0.34, 0.03, 0.01, 0],
@@ -116,7 +114,7 @@ elif page == "상관관계":
     corr = df.drop(columns=["지역구"]).corr()
 
     fig, ax = plt.subplots(figsize=(8, 6))
-    im = ax.imshow(corr, vmin=-1, vmax=1)
+    im = ax.imshow(corr, vmin=-1, vmax=1, cmap="coolwarm")
 
     ax.set_xticks(range(len(corr.columns)))
     ax.set_yticks(range(len(corr.columns)))
@@ -129,6 +127,7 @@ elif page == "상관관계":
             ax.text(j, i, f"{corr.iloc[i, j]:.2f}", ha="center", va="center", fontsize=9)
 
     fig.colorbar(im, ax=ax)
+    plt.tight_layout()
     st.pyplot(fig)
 
     st.markdown("### 해석")
@@ -145,15 +144,29 @@ elif page == "추가 분석":
     st.subheader("사용연수와 탁도 관계")
 
     fig, ax = plt.subplots(figsize=(7, 5))
-    ax.scatter(df["사용연수"], df["탁도"])
+    ax.scatter(df["사용연수"], df["탁도"], color="#1D9E75", s=80, zorder=3)
+
+    # 추세선 추가
+    z = np.polyfit(df["사용연수"], df["탁도"], 1)
+    p = np.poly1d(z)
+    x_line = np.linspace(df["사용연수"].min(), df["사용연수"].max(), 100)
+    ax.plot(x_line, p(x_line), "r--", alpha=0.6, label="추세선")
 
     for _, row in df.iterrows():
-        ax.annotate(row["지역구"], (row["사용연수"], row["탁도"]), fontsize=8)
+        ax.annotate(row["지역구"], (row["사용연수"], row["탁도"]),
+                    textcoords="offset points", xytext=(5, 4), fontsize=8)
 
     ax.set_xlabel("사용연수")
     ax.set_ylabel("탁도")
     ax.set_title("사용연수 vs 탁도")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+    plt.tight_layout()
     st.pyplot(fig)
+
+    # 상관계수 표시
+    r = df["사용연수"].corr(df["탁도"])
+    st.metric("사용연수-탁도 상관계수", f"{r:.3f}")
 
     st.markdown("### 해석")
     st.write(
