@@ -17,6 +17,10 @@ plt.rcParams['font.family'] = [
 ]
 plt.rcParams['axes.unicode_minus'] = False
 
+ax.set_title("상관관계 히트맵", fontproperties=font)
+ax.set_xlabel("사용연수", fontproperties=font)
+ax.set_ylabel("탁도", fontproperties=font)
+
 st.set_page_config(
     page_title="서울시 상수도 노후화 분석",
     page_icon="💧",
