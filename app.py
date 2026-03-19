@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
 
 plt.rcParams['font.family'] = [
     'Malgun Gothic', 
@@ -8,8 +9,6 @@ plt.rcParams['font.family'] = [
     'NanumGothic'
 ]
 plt.rcParams['axes.unicode_minus'] = False
-
-requirements.txt
 
 st.set_page_config(
     page_title="서울시 상수도 노후화 분석",
