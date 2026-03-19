@@ -3,6 +3,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 
+# 폰트 직접 등록
+font_path = "./NanumGothic.ttf"
+font = fm.FontProperties(fname=font_path)
+
+plt.rcParams['font.family'] = font.get_name()
+plt.rcParams['axes.unicode_minus'] = False
+
 plt.rcParams['font.family'] = [
     'Malgun Gothic', 
     'AppleGothic', 
