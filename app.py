@@ -1,13 +1,14 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.font_manager as fm
+import matplotlib.pyplot as plt
 
-# 한글 폰트 설정
-plt.rcParams['font.family'] = 'Malgun Gothic'  # 윈도우
-plt.rcParams['font.family'] = 'AppleGothic'    # 맥
+plt.rcParams['font.family'] = [
+    'Malgun Gothic', 
+    'AppleGothic', 
+    'NanumGothic'
+]
 plt.rcParams['axes.unicode_minus'] = False
-
 
 st.set_page_config(
     page_title="서울시 상수도 노후화 분석",
