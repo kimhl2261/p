@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
 
 st.set_page_config(
     page_title="서울시 상수도 노후화 분석",
@@ -166,12 +167,3 @@ elif page == "정책 시사점":
     """)
 
     st.success("핵심 메시지: 노후화는 시설 문제가 아니라 수질과 시민 생활 문제로 이어집니다.")
-
-import matplotlib.pyplot as plt
-
-plt.rcParams['font.family'] = [
-    'Malgun Gothic', 
-    'AppleGothic', 
-    'NanumGothic'
-]
-plt.rcParams['axes.unicode_minus'] = False
